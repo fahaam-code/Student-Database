@@ -21,9 +21,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Students Database CRUD API & AI Assistant",
+    title="Student Information System",
     description=(
-        "EWB Edu Tech Internship Project: Student Database CRUD Application with SQLite "
+        "Student Database CRUD Application with SQLite "
         "and optional Ollama local AI extension for natural-language student queries."
     ),
     version="1.0.0",
