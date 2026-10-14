@@ -12,7 +12,6 @@ const searchClearBtn = document.getElementById("search-clear-btn");
 const courseFilter = document.getElementById("course-filter");
 const ageFilter = document.getElementById("age-filter");
 const refreshBtn = document.getElementById("refresh-table-btn");
-const seedBtn = document.getElementById("seed-btn");
 const addStudentBtn = document.getElementById("add-student-btn");
 
 // Stat counters
@@ -87,9 +86,6 @@ function setupEventListeners() {
   deleteConfirmBtn.addEventListener("click", confirmDeleteStudent);
 
   studentForm.addEventListener("submit", handleStudentFormSubmit);
-
-  // Seed sample data
-  seedBtn.addEventListener("click", handleSeedData);
 
   // AI Assistant form
   aiForm.addEventListener("submit", handleAISubmit);
@@ -192,7 +188,7 @@ function renderTable(students) {
       <tr>
         <td colspan="7" class="empty-cell">
           <p style="font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem;">No student records found</p>
-          <p style="font-size: 0.8rem; color: var(--text-dim);">Try adjusting your search filters or click "Seed Mock Data".</p>
+          <p style="font-size: 0.8rem; color: var(--text-dim);">Try adjusting your search filters or click "Add Student".</p>
         </td>
       </tr>
     `;
@@ -421,41 +417,6 @@ async function confirmDeleteStudent() {
   }
 }
 
-// --- Seed Data Action ---
-async function handleSeedData() {
-  seedBtn.disabled = true;
-  seedBtn.textContent = "Seeding...";
-  try {
-    const samples = [
-      { name: "Aarav Sharma", date_of_birth: "2004-05-14", email: "aarav.sharma@example.edu", phone: "+91 98765 43210", course: "Computer Science", address: "42 MG Road, Bengaluru" },
-      { name: "Diya Patel", date_of_birth: "2006-11-22", email: "diya.patel@example.edu", phone: "+91 98123 45678", course: "Data Science", address: "15 Park Street, Ahmedabad" },
-      { name: "Rohan Verma", date_of_birth: "2003-03-10", email: "rohan.verma@example.edu", phone: "+91 97234 56789", course: "Mechanical Engineering", address: "88 Civil Lines, Delhi" },
-      { name: "Ananya Iyer", date_of_birth: "2007-01-18", email: "ananya.iyer@example.edu", phone: "+91 96345 67890", course: "Computer Science", address: "12 Anna Salai, Chennai" },
-      { name: "Sneha Kulkarni", date_of_birth: "2006-04-15", email: "sneha.k@example.edu", phone: "+91 94567 89012", course: "Data Science", address: "29 FC Road, Pune" },
-    ];
-
-    let createdCount = 0;
-    for (const item of samples) {
-      const res = await fetch(`${API_BASE}/students`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item),
-      });
-      if (res.ok) createdCount++;
-    }
-
-    showToast(`Seeded ${createdCount} new student records!`, "success");
-    loadStudents();
-  } catch (err) {
-    showToast(`Error seeding data: ${err.message}`, "error");
-  } finally {
-    seedBtn.disabled = false;
-    seedBtn.innerHTML = `
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-      Seed Mock Data
-    `;
-  }
-}
 
 // --- AI Query Form Submission ---
 async function handleAISubmit(e) {
