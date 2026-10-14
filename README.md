@@ -1,8 +1,8 @@
 # Students Database CRUD Application & Local AI Assistant
 
-> **EWB Edu Tech Pvt. Ltd. | Python Backend Development Internship Project**  
-> **Project Type:** Individual Backend Development Project  
-> **Technology Stack:** Python 3.10+, FastAPI, SQLite, SQLAlchemy, Pydantic v2, Ollama (Local AI)
+> **Python Backend Development Project**  
+> **Project Type:** Student Database Management System  
+> **Technology Stack:** Python 3.10+, FastAPI, SQLite, SQLAlchemy, Pydantic v2
 
 ![Project Dashboard](app/static/preview.png)
 
@@ -282,5 +282,5 @@ curl -X POST "http://127.0.0.1:8000/ai/query" \
 ---
 
 ## 👤 Author & Submission Information
-- **Project:** Students Database CRUD Application (+ Optional AI Extension)
-- **Organization:** EWB Edu Tech Pvt. Ltd. | Internship Program
+- **Project:** Students Database CRUD Application
+- **Stack:** FastAPI, SQLite, React, TypeScript

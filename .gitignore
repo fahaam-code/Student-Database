@@ -50,3 +50,13 @@ htmlcov/
 
 # Logs
 *.log
+
+
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+students.db
+.env
+node_modules/
+dist/
