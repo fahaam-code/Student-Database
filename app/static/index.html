@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student CRUD Database & Local AI Assistant | EWB Edu Tech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="brand-group">
+        <div class="brand-logo">
+          <span class="logo-text">EWB</span>
+        </div>
+        <div class="brand-info">
+          <h1 class="app-title">Students Database System</h1>
+          <p class="app-subtitle">FastAPI • SQLite • Local Ollama AI</p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div id="ollama-status-badge" class="status-badge checking">
+          <span class="status-dot"></span>
+          <span id="ollama-status-text">Checking Ollama...</span>
+        </div>
+        <a href="/docs" target="_blank" class="nav-btn docs-btn" id="swagger-docs-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Interactive API Docs
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+      <!-- KPI Stats Bar -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Enrolled</span>
+            <span class="stat-value" id="stat-total-students">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Active Courses</span>
+            <span class="stat-value" id="stat-active-courses">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper teal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Born After 2005</span>
+            <span class="stat-value" id="stat-post-2005">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper emerald">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Database Engine</span>
+            <span class="stat-value text-sm">SQLite (Persistent)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Grid: Left Table & Right AI Section -->
+      <div class="workspace-grid">
+        <!-- Records Management Section -->
+        <section class="records-card">
+          <div class="card-header">
+            <div>
+              <h2 class="section-title">Student Records</h2>
+              <p class="section-desc">Manage student profiles with full Create, Read, Update, and Delete operations.</p>
+            </div>
+            <div class="header-buttons">
+              <button class="btn btn-secondary" id="seed-btn" title="Add sample mock students">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Seed Mock Data
+              </button>
+              <button class="btn btn-primary" id="add-student-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Student
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div class="toolbar">
+            <div class="search-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="search-input" placeholder="Search by name, ID, email or course...">
+              <button id="search-clear-btn" class="search-clear-btn hidden">&times;</button>
+            </div>
+
+            <div class="filter-group">
+              <select id="course-filter" class="filter-select">
+                <option value="">All Courses</option>
+              </select>
+
+              <select id="age-filter" class="filter-select">
+                <option value="all">All Birth Dates</option>
+                <option value="after-2005">Born After 2005</option>
+                <option value="before-2005">Born Before 2005</option>
+              </select>
+
+              <button class="btn btn-icon" id="refresh-table-btn" title="Refresh records">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Students Table -->
+          <div class="table-container">
+            <table class="data-table" id="students-table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Date of Birth</th>
+                  <th>Course</th>
+                  <th>Contact Info</th>
+                  <th>Enrollment</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-table-body">
+                <tr>
+                  <td colspan="7" class="loading-cell">Loading student records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table Footer -->
+          <div class="table-footer">
+            <span class="record-count-text" id="record-count-text">Showing 0 students</span>
+          </div>
+        </section>
+
+        <!-- Right Side: AI Assistant & Natural Language Query -->
+        <aside class="ai-card">
+          <div class="ai-header">
+            <div class="ai-badge">
+              <span class="ai-sparkle">✨</span>
+              <span>Ollama Local AI Extension</span>
+            </div>
+            <h3 class="ai-card-title">Natural Language Database Assistant</h3>
+            <p class="ai-card-subtitle">Ask questions about stored student records. Data is safely fetched and grounded by backend code.</p>
+          </div>
+
+          <!-- Quick Query Chips -->
+          <div class="prompt-chips">
+            <span class="chips-label">Quick Prompts:</span>
+            <div class="chips-container">
+              <button class="chip" data-prompt="How many students are there?">"How many students are there?"</button>
+              <button class="chip" data-prompt="List students born after 2005.">"List students born after 2005."</button>
+              <button class="chip" data-prompt="Which students are in Computer Science?">"Computer Science students?"</button>
+              <button class="chip" data-prompt="List all students with their IDs and courses.">"List all students"</button>
+            </div>
+          </div>
+
+          <!-- Query Input -->
+          <form id="ai-query-form" class="ai-query-form">
+            <div class="ai-input-wrapper">
+              <textarea id="ai-prompt-input" rows="2" placeholder="e.g. 'How many students are there?' or 'List students born after 2005'"></textarea>
+              <button type="submit" id="ai-submit-btn" class="ai-send-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <span>Ask AI</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- AI Response Area -->
+          <div id="ai-response-container" class="ai-response-container">
+            <div class="ai-placeholder">
+              <div class="ai-placeholder-icon">🤖</div>
+              <p>Type a question above or click a prompt chip to query your database with local AI.</p>
+            </div>
+          </div>
+
+          <!-- Ollama Guidance Box -->
+          <div class="ollama-help-box">
+            <div class="help-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span>Bonus Local AI Architecture</span>
+            </div>
+            <p class="help-text">Runs on <code>llama3.2:1b</code> via Ollama HTTP API (<code>localhost:11434</code>). If Ollama is offline, the grounded fallback engine provides responses grounded in SQLite data without breaking.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Create / Edit Student -->
+  <div class="modal-backdrop hidden" id="student-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Add New Student</h3>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="student-form" class="modal-form">
+        <input type="hidden" id="form-mode" value="create">
+        <input type="hidden" id="edit-original-id" value="">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-student-id">Student ID <span class="label-hint">(Optional, auto-generated if blank)</span></label>
+            <input type="text" id="input-student-id" placeholder="e.g. STU1008">
+          </div>
+          <div class="form-group">
+            <label for="input-name">Full Name <span class="required">*</span></label>
+            <input type="text" id="input-name" required placeholder="e.g. Priya Nair">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-dob">Date of Birth <span class="required">*</span></label>
+            <input type="date" id="input-dob" required>
+          </div>
+          <div class="form-group">
+            <label for="input-course">Course / Major</label>
+            <input type="text" id="input-course" placeholder="e.g. Computer Science">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-email">Email Address <span class="label-hint">(Email or Phone required)</span></label>
+            <input type="email" id="input-email" placeholder="priya.nair@example.edu">
+          </div>
+          <div class="form-group">
+            <label for="input-phone">Phone Number <span class="label-hint">(Email or Phone required)</span></label>
+            <input type="tel" id="input-phone" placeholder="+91 98765 43210">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-enrollment-date">Enrollment Date</label>
+            <input type="date" id="input-enrollment-date">
+          </div>
+          <div class="form-group">
+            <label for="input-address">Address</label>
+            <input type="text" id="input-address" placeholder="e.g. 14 Lake View Road, Kochi">
+          </div>
+        </div>
+
+        <div class="modal-error hidden" id="modal-error-message"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-save-btn">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Student Profile Details -->
+  <div class="modal-backdrop hidden" id="view-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Student Profile</h3>
+        <button class="modal-close-btn" id="view-close-btn">&times;</button>
+      </div>
+      <div class="profile-content" id="profile-details-content">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="view-done-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Delete Confirmation -->
+  <div class="modal-backdrop hidden" id="delete-modal">
+    <div class="modal-card modal-confirm">
+      <div class="confirm-icon danger">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+      </div>
+      <h3>Delete Student Record</h3>
+      <p id="delete-confirm-text">Are you sure you want to permanently delete this student record?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="delete-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="delete-confirm-btn">Delete Permanently</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
