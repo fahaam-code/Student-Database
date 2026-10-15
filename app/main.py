@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from sqlalchemy import text
 from app.database import engine, Base, get_db
 from app.models import Student
 from app.routers import students, ai
@@ -31,6 +32,21 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+@app.get("/api/db-check")
+def db_check():
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+
+        return {
+            "database_engine": engine.dialect.name,
+            "connection_ok": True
+        }
+    except Exception:
+        return {
+            "database_engine": engine.dialect.name,
+            "connection_ok": False
+        }
 
 # Enable CORS for browser access
 app.add_middleware(
