@@ -1,5 +1,5 @@
 // Student CRUD & Local AI Assistant Frontend Logic
-const API_BASE = window.location.origin;
+const API_BASE = "https://student-database-iyj7.onrender.com";
 
 let allStudents = [];
 let currentDeletingId = null;
